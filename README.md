@@ -1,7 +1,6 @@
 # dbsnpcheck
 
 [![Build Status](https://travis-ci.org/clinseq/dbsnpcheck.svg?branch=master)](https://travis-ci.org/clinseq/dbsnpcheck)
-[![Coverage Status](https://coveralls.io/repos/github/clinseq/dbsnpcheck/badge.svg?branch=master)](https://coveralls.io/github/clinseq/dbsnpcheck?branch=master)
 
 `dbsnpcheck` is a python package which counts the number of somatic SNVs in an input file are present in a dbSNP (or other) VCF file. It's useful for identifying cases with potential contamination of the tumor in a tumor/normal pair, which can cause an excess of somatic calls to be generated, overlaping known germline sites.
 
@@ -14,7 +13,9 @@ Make sure to use dbSNP with somatic variants removed, such as `common_all`, or f
 # Examples
 
 ~~~bash
+
 dbsnpcheck --input somatic.vcf.gz --dbsnp dbsnp.vcf.gz 
+
 ~~~
 
 # File requirements
