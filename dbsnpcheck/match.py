@@ -7,7 +7,11 @@ def match_variants(variants, dbsnp):
     """
     Get number of overlapping variants between two files (ex somatic variants and dbSNP)
     """
-    vcf_reader_input = vcf.Reader(variants)
+    try:
+        vcf_reader_input = vcf.Reader(variants)
+    except StopIteration:
+        vcf_reader_input = []
+
     vcf_reader_dbsnp = vcf.Reader(dbsnp)
 
     n_input_variants = 0
@@ -25,9 +29,15 @@ def match_variants(variants, dbsnp):
     logging.info("Detected {} somatic variants in the input, of which {} exists in the database VCF. ".format(
         n_input_variants, n_input_variants_in_dbsnp))
 
-    return {'n_somatic_variants': n_input_variants,
-            'n_in_dbsnp': n_input_variants_in_dbsnp,
-            'frac_in_dbsnp': float(n_input_variants_in_dbsnp) / float(n_input_variants)}
+    res = {'n_somatic_variants': n_input_variants,
+           'n_in_dbsnp': n_input_variants_in_dbsnp}
+
+    if n_input_variants == 0:
+        res['frac_in_dbsnp'] = 0.0
+    else:
+        res['frac_in_dbsnp'] = float(n_input_variants_in_dbsnp) / float(n_input_variants)
+
+    return res
 
 
 def count_matches(variant, dbsnp_variants):
@@ -45,8 +55,10 @@ def count_matches(variant, dbsnp_variants):
 
                 if variant.CHROM == dbsnp_variant.CHROM and \
                                 variant.POS == dbsnp_variant.POS and \
+                                variant.REF == dbsnp_variant.REF and \
                                 variant_alt == dbsnp_alt:
                     matching_count += 1
+
                     logging.debug("{}/{} {}/{} matches {}/{} {}/{}".format(
                         variant.CHROM, variant.POS, variant.REF, variant_alt,
                         dbsnp_variant.CHROM, dbsnp_variant.POS, dbsnp_variant.REF, dbsnp_alt

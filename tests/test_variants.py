@@ -66,3 +66,18 @@ class TestVariants(unittest.TestCase):
         matching_count = count_matches(variant, dbsnp_variants)
 
         self.assertEqual(matching_count, 0)
+
+    def test_matches_correct_deletion(self):
+        """
+        In dbSNP, some deletions are represented as multiple lines with different REF.
+        """
+        alt = vcf.model._Substitution('T')
+
+        variant = vcf.model._Record(1, 123, '.', 'TATA', [alt], None, None, {}, None, {}, None)
+
+        dbsnp_variants = [vcf.model._Record(1, 123, 'foo', 'TA', [alt], None, None, {}, None, {}, None),
+                          vcf.model._Record(1, 123, 'bar', 'TATA', [alt], None, None, {}, None, {}, None)]
+
+        matching_count = count_matches(variant, dbsnp_variants)
+
+        self.assertEqual(matching_count, 1)
