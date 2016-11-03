@@ -55,8 +55,10 @@ def count_matches(variant, dbsnp_variants):
 
                 if variant.CHROM == dbsnp_variant.CHROM and \
                                 variant.POS == dbsnp_variant.POS and \
+                                variant.REF == dbsnp_variant.REF and \
                                 variant_alt == dbsnp_alt:
                     matching_count += 1
+
                     logging.debug("{}/{} {}/{} matches {}/{} {}/{}".format(
                         variant.CHROM, variant.POS, variant.REF, variant_alt,
                         dbsnp_variant.CHROM, dbsnp_variant.POS, dbsnp_variant.REF, dbsnp_alt
