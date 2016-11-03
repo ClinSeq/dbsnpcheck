@@ -1,7 +1,6 @@
 import json
 import logging
 import click
-import vcf
 
 from dbsnpcheck.match import match_variants
 
@@ -16,27 +15,9 @@ def base(variants, dbsnp, output, loglevel):
 
     logging.info("Using {} and {}".format(variants, dbsnp))
 
-    vcf_reader_input = vcf.Reader(variants)
-    vcf_reader_dbsnp = vcf.Reader(dbsnp)
+    results = match_variants(variants, dbsnp)
 
-    n_input_variants = 0
-    n_input_variants_in_dbsnp = 0
-
-    for v in vcf_reader_input:
-        dbsnp_variants = vcf_reader_dbsnp.fetch(v.CHROM, v.POS-1, v.POS+1)
-
-        # can be multiple ALT alleles in the input file, each will count
-        for alt in v.ALT:
-            n_input_variants += 1
-
-        n_input_variants_in_dbsnp += match_variants(variant=v, dbsnp_variants=dbsnp_variants)
-
-    logging.info("Detected {} somatic variants in the input, of which {} exists in the database VCF. ".format(
-        n_input_variants, n_input_variants_in_dbsnp))
-
-    json.dump({'n_somatic_variants':n_input_variants,
-               'n_in_dbsnp': n_input_variants_in_dbsnp,
-               'frac_in_dbsnp': float(n_input_variants_in_dbsnp)/float(n_input_variants)}, output,
+    json.dump(results, output,
               sort_keys=True, indent=4)
 
 

@@ -2,7 +2,7 @@ import unittest
 
 import vcf
 
-from dbsnpcheck.match import match_variants
+from dbsnpcheck.match import count_matches
 
 
 class TestVariants(unittest.TestCase):
@@ -17,7 +17,7 @@ class TestVariants(unittest.TestCase):
         dbsnp_variants = [vcf.model._Record(1, 123, '.', 'A', [alt], None,
                                             None, {}, None, {}, None)]
 
-        matching_count = match_variants(variant, dbsnp_variants)
+        matching_count = count_matches(variant, dbsnp_variants)
 
         self.assertEqual(matching_count, 1)
 
@@ -31,7 +31,7 @@ class TestVariants(unittest.TestCase):
         dbsnp_variants = [vcf.model._Record(1, 123, '.', 'A', [germline_alt], None,
                                             None, {}, None, {}, None)]
 
-        matching_count = match_variants(variant, dbsnp_variants)
+        matching_count = count_matches(variant, dbsnp_variants)
 
         self.assertEqual(matching_count, 0)
 
@@ -42,7 +42,7 @@ class TestVariants(unittest.TestCase):
         dbsnp_variants_ins = [vcf.model._Record(1, 123, '.', 'A', [alt_int], None,
                                                 None, {}, None, {}, None)]
 
-        matching_count = match_variants(variant_ins, dbsnp_variants_ins)
+        matching_count = count_matches(variant_ins, dbsnp_variants_ins)
         self.assertEqual(matching_count, 1)
 
         alt_del = vcf.model._Substitution('G')
@@ -51,7 +51,7 @@ class TestVariants(unittest.TestCase):
         dbsnp_variants_del = [vcf.model._Record(1, 123, '.', 'GAAA', [alt_del], None,
                                                 None, {}, None, {}, None)]
 
-        matching_count = match_variants(variant_del, dbsnp_variants_del)
+        matching_count = count_matches(variant_del, dbsnp_variants_del)
         self.assertEqual(matching_count, 1)
 
     def test_does_not_count_adjacent_variant(self):
@@ -63,6 +63,6 @@ class TestVariants(unittest.TestCase):
         dbsnp_variants = [vcf.model._Record(1, pos-1, '.', 'A', [alt], None,
                                             None, {}, None, {}, None)]
 
-        matching_count = match_variants(variant, dbsnp_variants)
+        matching_count = count_matches(variant, dbsnp_variants)
 
         self.assertEqual(matching_count, 0)
